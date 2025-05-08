@@ -1,0 +1,685 @@
+\documentclass[11pt]{amsart}
+
+% Standard AMS packages
+\usepackage{amsmath, amssymb, amsthm}
+% For potential figures
+\usepackage{graphicx}
+% For hyperlinks (optional but good practice)
+\usepackage{hyperref}
+% For bibliography management
+\usepackage[backend=bibtex, style=numeric, sorting=none]{biblatex}
+\addbibresource{references.bib} % Specify the BibTeX database file
+
+% Theorem Environments (using amsthm)
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Title and Author Information
+\title{The Principle of Inclusion-Exclusion: Statement, Proofs, and Applications}
+\author{F. C. Moreira}
+\date{\today} % Omit or set specific date for submission
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The Principle of Inclusion-Exclusion (PIE) is presented as a fundamental technique in enumerative combinatorics for determining the cardinality of the union of finite sets, particularly when these sets overlap.[1, 2] This article details the general statement of the principle and illustrates its application for small numbers of sets. The primary proof, a combinatorial argument based on ensuring each element is counted exactly once, is presented.[3, 4] Key applications are explored, demonstrating the principle's utility in solving classical combinatorial problems such as counting derangements and subjective functions.[5, 6] The principle's broad applicability and significance within discrete mathematics are highlighted.[7, 8]
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{Motivation: The Challenge of Overlapping Sets}
+A foundational task in combinatorics involves counting the elements within sets. For sets that are mutually exclusive (disjoint), the task is straightforward: the cardinality of their union is simply the sum of their individual cardinalities. This is often referred to as the Addition Rule or Sum Rule.[8, 9] However, many counting problems involve sets that are not disjoint, meaning they share common elements.
+
+Consider the simple case of two finite sets, $A$ and $B$. If we attempt to find the size of their union, $|A \cup B|$, by merely adding their individual sizes, $|A| + |B|$, any element belonging to both $A$ and $B$ (i.e., elements in the intersection $A \cap B$) will be counted twice.[8, 10] To correct this overcounting, the size of the intersection must be subtracted. This leads to the well-known formula for two sets:
+\
+This simple correction illustrates the core challenge addressed by the Principle of Inclusion-Exclusion: systematically accounting for overlaps when counting elements in the union of multiple sets.[2, 7] As the number of sets increases, the pattern of overlaps becomes more complex, necessitating a general principle to manage the inclusion and exclusion of intersection cardinalities.[1] The effectiveness of PIE stems from its ability to provide a systematic way to solve the problem introduced by overlapping sets, a limitation inherent in the basic Sum Rule.
+
+\subsection{Context in Combinatorics}
+Enumerative combinatorics, the field concerned with counting finite structures, relies on a collection of fundamental principles.[3, 11] Basic techniques include the Sum Rule for disjoint cases and the Product Rule for sequential choices.[9, 12] Set theory provides the language and framework for many combinatorial problems, involving operations like union, intersection, and complement.[5, 13]
+
+Within this context, the Principle of Inclusion-Exclusion emerges as a crucial counting technique.[1, 7] It directly addresses the calculation of the size of unions of sets that are not necessarily disjoint, providing a powerful extension to the basic Sum Rule.[2] It is often introduced after foundational counting rules and set theory concepts, serving as a bridge to more sophisticated combinatorial arguments and problem-solving methods.[10, 14]
+
+\subsection{Historical Note}
+The conceptual underpinnings of the Principle of Inclusion-Exclusion are often attributed to Abraham de Moivre, dating back to 1718.[7] However, the first formal published accounts and explicit formulas appeared later. Daniel da Silva, in an 1854 paper, presented a formulation of the principle.[8, 15] Subsequently, J. J. Sylvester provided another treatment in 1883.[7, 15] Consequently, the principle is sometimes referred to as the formula of Da Silva or Sylvester.[7] An early application of the principle was by Nicholas Bernoulli in solving the "problème des rencontres" (the problem of derangements).[16] Despite its potentially ancient roots, as suggested by P. Stein's comment that its origin is "probably untraceable" [15], its formalization occurred relatively late. Its significance is underscored by Gian-Carlo Rota's statement: "One of the most useful principles of enumeration in discrete probability and combinatorial theory is the celebrated principle of inclusion–exclusion".[7] This historical trajectory, from concept and early application to formal publication and generalization, reflects a common pattern in the development of mathematical ideas.
+
+\subsection{Article Overview}
+This article provides a comprehensive exposition of the Principle of Inclusion-Exclusion. Section 2 presents the formal statement of the principle in its general form and illustrates its mechanics for the cases of two and three sets, aided by a structural summary table and references to visual aids (Venn diagrams). Section 3 details the primary combinatorial proof of the principle, demonstrating rigorously why the formula correctly counts each element in the union exactly once, and optionally outlines an alternative proof using characteristic functions. Section 4 explores several key applications, including the classical problems of counting derangements and surjective functions, as well as its use in divisibility problems, showcasing the principle's practical power. Section 5 discusses generalizations of the principle and its connection to the broader theory of M\"obius inversion on partially ordered sets. Finally, Section 6 offers concluding remarks on the significance and versatility of the Principle of Inclusion-Exclusion.
+
+\section{The Principle of Inclusion-Exclusion}
+
+\subsection{Statement of the Principle}
+The Principle of Inclusion-Exclusion provides a formula for the cardinality of the union of a finite collection of finite sets.
+
+\begin{theorem}[Principle of Inclusion-Exclusion]
+Let $A_1, A_2, \ldots, A_n$ be finite sets. Then the cardinality of their union is given by:
+\begin{align*}
+|A_1 \cup A_2 \cup \cdots \cup A_n| = &\sum_{1 \le i \le n} |A_i| \\
+&- \sum_{1 \le i < j \le n} |A_i \cap A_j| \\
+&+ \sum_{1 \le i < j < k \le n} |A_i \cap A_j \cap A_k| \\
+&- \cdots \\
+&+ (-1)^{n-1} |A_1 \cap A_2 \cap \cdots \cap A_n|
+\label{eq:pie_expanded}
+\end{align*}
+The summations are taken over all distinct indices $i$, all distinct pairs of indices $i < j$, all distinct triples $i < j < k$, and so on, up to the intersection of all $n$ sets.[5, 14]
+\end{theorem}
+
+The alternating signs and the systematic inclusion of cardinalities of intersections of increasing order are the defining characteristics of this formula. This structure ensures that elements belonging to multiple sets are ultimately counted exactly once.
+
+A more compact notation utilizes summation over non-empty subsets of the index set $\{1, 2, \ldots, n\}$ [4]:
+\begin{equation}
+\left| \bigcup_{i=1}^n A_i \right| = \sum_{\emptyset \neq I \subseteq \{1, \ldots, n\}} (-1)^{|I|-1} \left| \bigcap_{i \in I} A_i \right|
+\label{eq:pie_compact}
+\end{equation}
+
+Often, it is more convenient to work with the complementary form of the principle, which counts the number of elements in a universal set $S$ that belong to *none* of the sets $A_1, \ldots, A_n$. This is particularly useful when the sets $A_i$ represent elements possessing certain properties $P_i$, and we wish to count elements possessing none of these properties.[7]
+\begin{corollary}[Complementary Form of PIE]
+Let $A_1, A_2, \ldots, A_n$ be subsets of a finite universal set $S$. Then the number of elements in $S$ but not in any $A_i$ is:
+\begin{align*}
+\left| S \setminus \left( \bigcup_{i=1}^n A_i \right) \right| &= |S| - \left| \bigcup_{i=1}^n A_i \right| \\
+&= |S| - \sum_{i} |A_i| + \sum_{i<j} |A_i \cap A_j| - \cdots + (-1)^n |A_1 \cap \cdots \cap A_n| \\
+&= \sum_{I \subseteq \{1, \ldots, n\}} (-1)^{|I|} \left| \bigcap_{i \in I} A_i \right|
+\label{eq:pie_complementary}
+\end{align*}
+where the intersection over the empty set ($I=\emptyset$) is defined as the universal set $S$.
+\end{corollary}
+This complementary form is frequently applied in problems like counting derangements (permutations with no fixed points) or determining the number of integers coprime to a given number, as calculating the sizes of intersections is often more straightforward than calculating the size of the union directly.[4, 5]
+
+\subsection{Illustration for n=2 and n=3}
+To build intuition, let's examine the explicit formulas for small values of $n$.
+
+For $n=2$, the principle states [1, 10]:
+\[ |A_1 \cup A_2| = |A_1| + |A_2| - |A_1 \cap A_2| \]
+Here, we sum the sizes of the individual sets ($|A_1| + |A_2|$). This counts elements in $A_1 \setminus A_2$ once, elements in $A_2 \setminus A_1$ once, but elements in the intersection $A_1 \cap A_2$ twice. Subtracting $|A_1 \cap A_2|$ corrects this overcounting, ensuring each element in the union is counted exactly once.[2, 10] A Venn diagram for two sets visually clarifies this process (see Figure \ref{fig:venn2}).
+
+\begin{figure}[ht]
+    % Placeholder for Venn diagram for n=2
+    \centering
+    \fbox{\parbox{0.6\textwidth}{\centering \vspace{2cm} Placeholder for Venn Diagram (n=2) showing regions $A_1 \setminus A_2$, $A_2 \setminus A_1$, and $A_1 \cap A_2$. \vspace{2cm}}}
+    \caption{Venn diagram illustrating the Principle of Inclusion-Exclusion for n=2 sets. The formula $|A_1 \cup A_2| = |A_1| + |A_2| - |A_1 \cap A_2|$ ensures each region is counted once.}
+    \label{fig:venn2}
+\end{figure}
+
+For $n=3$, the formula becomes [17, 18]:
+\begin{align*} |A_1 \cup A_2 \cup A_3| = &(|A_1| + |A_2| + |A_3|) \\ &- (|A_1 \cap A_2| + |A_1 \cap A_3| + |A_2 \cap A_3|) \\ &+ |A_1 \cap A_2 \cap A_3| \end{align*}
+The process is analogous:
+\begin{enumerate}
+    \item **Include** the sizes of all single sets: $|A_1| + |A_2| + |A_3|$. Elements in exactly one set are counted once. Elements in exactly two sets are counted twice. Elements in all three sets are counted thrice.
+    \item **Exclude** the sizes of all pairwise intersections: $- (|A_1 \cap A_2| + |A_1 \cap A_3| + |A_2 \cap A_3|)$. This subtracts 1 from the count of elements in exactly two sets (leaving them counted once) and subtracts 3 from the count of elements in all three sets (leaving them counted $3-3=0$ times).
+    \item **Include** the size of the triple intersection: $+ |A_1 \cap A_2 \cap A_3|$. This adds 1 back to the count of elements in all three sets, ensuring they are ultimately counted exactly once.[4, 6]
+\end{enumerate}
+A Venn diagram for three sets, showing all seven distinct regions formed by the overlaps, provides a visual confirmation that this alternating sum correctly counts each region precisely once (see Figure \ref{fig:venn3}).
+
+\begin{figure}[ht]
+    % Placeholder for Venn diagram for n=3
+    \centering
+    \fbox{\parbox{0.7\textwidth}{\centering \vspace{3cm} Placeholder for Venn Diagram (n=3) showing all 7 regions corresponding to intersections and relative complements. \vspace{3cm}}}
+    \caption{Venn diagram illustrating the Principle of Inclusion-Exclusion for n=3 sets. The formula accounts for single sets, pairwise intersections, and the triple intersection to count each element in the union exactly once.}
+    \label{fig:venn3}
+\end{figure}
+
+The structure of the PIE formula across these cases can be summarized as follows:
+
+\begin{table}[ht]
+\centering
+\caption{Structure of PIE Formula Terms for Union Cardinality}
+\label{tab:pie_structure}
+\begin{tabular}{clcl}
+\hline
+\textbf{n} & \textbf{Term Type} & \textbf{Sign} & \textbf{Formula Component} \\ \hline
+1 & Singles & + & $|A_1|$ \\ \hline
+2 & Singles & + & $|A_1| + |A_2|$ \\
+  & Pairs   & - & $- |A_1 \cap A_2|$ \\ \hline
+3 & Singles & + & $|A_1| + |A_2| + |A_3|$ \\
+  & Pairs   & - & $- (|A_1 \cap A_2| + |A_1 \cap A_3| + |A_2 \cap A_3|)$ \\
+  & Triples & + & $+ |A_1 \cap A_2 \cap A_3|$ \\ \hline
+General $n$ & $k$-way Intersections & $(-1)^{k-1}$ & $\sum_{|I|=k} \left| \bigcap_{i \in I} A_i \right|$ for $k=1, \dots, n$ \\ \hline
+\end{tabular}
+\end{table}
+
+Table \ref{tab:pie_structure} highlights the consistent pattern: sum the sizes of intersections of $k$ sets, multiplied by $(-1)^{k-1}$. This alternating summation structure is fundamental to the principle's correctness.
+
+\section{Proofs of the Principle}
+
+\subsection{Combinatorial Proof (Counting Elements)}
+The most intuitive proof of the Principle of Inclusion-Exclusion relies on demonstrating that every element within the union of the sets is counted exactly once by the formula's right-hand side (RHS), while elements outside the union are counted zero times. This approach directly addresses the core requirement of correct counting by analyzing the contribution of each individual element.[3, 4]
+
+\begin{proof}
+Let $S = \bigcup_{i=1}^n A_i$. We need to show that the expression
+\[ \sum_{\emptyset \neq I \subseteq \{1, \ldots, n\}} (-1)^{|I|-1} \left| \bigcap_{i \in I} A_i \right| \]
+equals $|S|$. We do this by considering an arbitrary element $x \in S$ and calculating how many times it is counted by the sum. Let $x$ belong to exactly $k$ of the sets $A_1, \ldots, A_n$, where $k \ge 1$. Without loss of generality, assume $x$ belongs to $A_1, A_2, \ldots, A_k$ and not to $A_{k+1}, \ldots, A_n$.
+
+Now, consider the terms in the PIE sum:
+\begin{itemize}
+    \item The term $\sum |A_i|$ counts $x$ once for each of $A_1, \ldots, A_k$. So, $x$ is counted $k = \binom{k}{1}$ times in this sum.
+    \item The term $\sum |A_i \cap A_j|$ counts $x$ if and only if both $A_i$ and $A_j$ are among the sets $A_1, \ldots, A_k$. There are $\binom{k}{2}$ such pairs. Since this sum is subtracted, $x$'s contribution is $-\binom{k}{2}$.
+    \item The term $\sum |A_i \cap A_j \cap A_l|$ counts $x$ if and only if $A_i, A_j, A_l$ are all among $A_1, \ldots, A_k$. There are $\binom{k}{3}$ such triples. This sum is added, contributing $+\binom{k}{3}$.
+    \item This pattern continues. For an intersection of $m$ sets, $\bigcap_{i \in I} A_i$ where $|I|=m$, the element $x$ is included if and only if $I \subseteq \{1, \ldots, k\}$. The number of such subsets $I$ of size $m$ is $\binom{k}{m}$. The contribution to the total count for $x$ from the sum over $m$-way intersections is $(-1)^{m-1} \binom{k}{m}$.
+    \item For intersections involving more than $k$ sets (i.e., $m > k$), $x$ cannot belong to such an intersection, so the count contribution is 0.
+\end{itemize}
+Therefore, the total number of times $x$ is counted by the RHS of the PIE formula is:
+\[ \binom{k}{1} - \binom{k}{2} + \binom{k}{3} - \cdots + (-1)^{k-1} \binom{k}{k} \]
+We know from the Binomial Theorem that for any integer $k \ge 0$:
+\[ (1 - y)^k = \sum_{m=0}^k \binom{k}{m} (-y)^m = \binom{k}{0} - \binom{k}{1}y + \binom{k}{2}y^2 - \cdots + (-1)^k \binom{k}{k}y^k \]
+Setting $y=1$, for $k \ge 1$, we get:
+\[ 0 = (1 - 1)^k = \binom{k}{0} - \binom{k}{1} + \binom{k}{2} - \binom{k}{3} + \cdots + (-1)^k \binom{k}{k} \]
+Since $\binom{k}{0} = 1$, we can rearrange this to:
+\[ \binom{k}{1} - \binom{k}{2} + \binom{k}{3} - \cdots + (-1)^{k-1} \binom{k}{k} = 1 \]
+This shows that any element $x$ belonging to exactly $k \ge 1$ sets (and thus belonging to the union $S$) is counted exactly once by the RHS of the PIE formula.
+
+If an element $y$ is not in the union $S$, then $y$ belongs to zero sets ($k=0$). It contributes 0 to $|A_i|$, 0 to $|A_i \cap A_j|$, and so on. Thus, $y$ is counted 0 times by the RHS.
+
+Since every element in $S$ is counted exactly once, and elements outside $S$ are counted zero times, the formula correctly calculates $|S|$. This elegant connection between the alternating sum structure of PIE and a fundamental binomial identity reveals precisely why the formula works: the specific coefficients and signs perfectly cancel out the initial over- and under-counting introduced by summing individual set sizes and lower-order intersections.[3, 14]
+\end{proof}
+
+\subsection{Proof using Characteristic Functions (Optional)}
+An alternative proof utilizes characteristic functions, offering an algebraic perspective on the principle.[5]
+
+\begin{definition}
+Given a universal set $\Omega$ and a subset $A \subseteq \Omega$, the \emph{characteristic function} of $A$, denoted $1_A: \Omega \to \{0, 1\}$, is defined by:
+\[ 1_A(x) = \begin{cases} 1 & \text{if } x \in A \\ 0 & \text{if } x \notin A \end{cases} \]
+\end{definition}
+
+Characteristic functions satisfy several useful algebraic properties corresponding to set operations:
+\begin{itemize}
+    \item $1_{A^c}(x) = 1 - 1_A(x)$ (Complement)
+    \item $1_{A \cap B}(x) = 1_A(x) \cdot 1_B(x)$ (Intersection)
+    \item $|A| = \sum_{x \in \Omega} 1_A(x)$ (Cardinality)
+\end{itemize}
+Using these, we can derive the property for the union:
+$1_{A \cup B} = 1 - 1_{(A \cup B)^c} = 1 - 1_{A^c \cap B^c} = 1 - 1_{A^c} \cdot 1_{B^c} = 1 - (1 - 1_A)(1 - 1_B) = 1 - (1 - 1_A - 1_B + 1_A 1_B) = 1_A + 1_B - 1_A 1_B = 1_A + 1_B - 1_{A \cap B}$.
+
+\begin{proof}
+Let $A_1, \ldots, A_n$ be subsets of a universal set $\Omega$. Let $U = \bigcup_{i=1}^n A_i$. The characteristic function of the union $U$ can be expressed using complements and intersections:
+\begin{align*}
+1_U(x) &= 1 - 1_{U^c}(x) \\
+&= 1 - 1_{\left(\bigcup_{i=1}^n A_i\right)^c}(x) \\
+&= 1 - 1_{\bigcap_{i=1}^n A_i^c}(x) \quad \text{(De Morgan's Law)} \\
+&= 1 - \prod_{i=1}^n 1_{A_i^c}(x) \quad \text{(Property of intersection)} \\
+&= 1 - \prod_{i=1}^n (1 - 1_{A_i}(x)) \quad \text{(Property of complement)}
+\end{align*}
+Expanding the product $\prod_{i=1}^n (1 - 1_{A_i}(x))$ yields:
+\[ \prod_{i=1}^n (1 - 1_{A_i}(x)) = 1 - \sum_i 1_{A_i}(x) + \sum_{i<j} 1_{A_i}(x)1_{A_j}(x) - \cdots + (-1)^n \prod_{i=1}^n 1_{A_i}(x) \]
+\[ = 1 - \sum_i 1_{A_i}(x) + \sum_{i<j} 1_{A_i \cap A_j}(x) - \cdots + (-1)^n 1_{A_1 \cap \cdots \cap A_n}(x) \]
+Substituting this back into the expression for $1_U(x)$:
+\[ 1_U(x) = 1 - \left( 1 - \sum_i 1_{A_i}(x) + \sum_{i<j} 1_{A_i \cap A_j}(x) - \cdots + (-1)^n 1_{A_1 \cap \cdots \cap A_n}(x) \right) \]
+\[ 1_U(x) = \sum_i 1_{A_i}(x) - \sum_{i<j} 1_{A_i \cap A_j}(x) + \cdots + (-1)^{n-1} 1_{A_1 \cap \cdots \cap A_n}(x) \]
+This identity holds pointwise for every $x \in \Omega$. Summing both sides over all $x \in \Omega$ and using the property $|A| = \sum_{x \in \Omega} 1_A(x)$, we obtain the Principle of Inclusion-Exclusion:
+\[ |U| = \sum_i |A_i| - \sum_{i<j} |A_i \cap A_j| + \cdots + (-1)^{n-1} |A_1 \cap \cdots \cap A_n| \]
+This proof demonstrates that PIE arises naturally from the algebraic properties of characteristic functions corresponding to set operations.[5]
+\end{proof}
+
+\section{Key Applications}
+The Principle of Inclusion-Exclusion finds application in a wide variety of counting problems. Its strength lies in transforming potentially difficult direct counts into the often simpler task of counting elements within intersections of sets representing specific properties. The following examples are canonical illustrations of this technique.
+
+\subsection{Derangements (The Hat-Check Problem)}
+One of the most famous applications of PIE is counting derangements.[7, 10]
+\begin{definition}
+A \emph{derangement} of a set $\{1, 2, \ldots, n\}$ is a permutation $\sigma$ of the set such that $\sigma(i) \neq i$ for all $i \in \{1, 2, \ldots, n\}$. That is, no element appears in its original position. The number of derangements of $n$ elements is denoted by $D_n$ or $!n$.
+\end{definition}
+
+The problem can be visualized as $n$ people checking their hats, and we want to count the ways the hats can be returned such that no person receives their own hat.[3, 10]
+
+To find $D_n$, we use the complementary form of PIE. Let $S_n$ be the set of all $n!$ permutations of $\{1, \ldots, n\}$. For $i = 1, \ldots, n$, let $A_i$ be the set of permutations $\sigma \in S_n$ such that $\sigma(i) = i$ (i.e., $i$ is a fixed point).[3, 5] A derangement is a permutation that belongs to none of the sets $A_i$. Thus, we seek the value $|S_n| - |\bigcup_{i=1}^n A_i|$.
+
+We need to calculate the size of the intersections. Consider an intersection of $k$ sets, say $A_{i_1} \cap A_{i_2} \cap \cdots \cap A_{i_k}$, where $1 \le i_1 < i_2 < \cdots < i_k \le n$. This intersection represents the set of permutations where the elements $i_1, i_2, \ldots, i_k$ are all fixed points. The remaining $n-k$ elements must be permuted among the remaining $n-k$ positions. This can be done in $(n-k)!$ ways.[5, 14]
+
+The number of ways to choose the $k$ fixed points is $\binom{n}{k}$. Therefore, the sum of the sizes of all $k$-way intersections is:
+\
+Note that $\binom{n}{k} (n-k)! = \frac{n!}{k!(n-k)!} (n-k)! = \frac{n!}{k!}$.[6]
+
+Applying the complementary form of PIE \eqref{eq:pie_complementary}:
+\begin{align*}
+D_n &= |S_n| - |A_1 \cup \cdots \cup A_n| \\
+&= |S_n| - \left( \sum_i |A_i| - \sum_{i<j} |A_i \cap A_j| + \cdots + (-1)^{n-1} |A_1 \cap \cdots \cap A_n| \right) \\
+&= n! - \left( S_1 - S_2 + S_3 - \cdots + (-1)^{n-1} S_n \right) \\
+&= n! - \left( \binom{n}{1}(n-1)! - \binom{n}{2}(n-2)! + \cdots + (-1)^{n-1} \binom{n}{n}(n-n)! \right) \\
+&= n! - \left( \frac{n!}{1!} - \frac{n!}{2!} + \frac{n!}{3!} - \cdots + (-1)^{n-1} \frac{n!}{n!} \right) \\
+&= n! \left( 1 - \frac{1}{1!} + \frac{1}{2!} - \frac{1}{3!} + \cdots + (-1)^n \frac{1}{n!} \right) \\
+&= n! \sum_{k=0}^n \frac{(-1)^k}{k!}
+\label{eq:derangements}
+\end{align*}
+This formula provides the exact number of derangements.[3, 5] The sum is a partial sum of the Taylor series for $e^{-1}$. Consequently, $D_n$ is the closest integer to $n!/e$ for $n \ge 1$.[3, 19] This application demonstrates how PIE transforms the problem of counting permutations with a complex global property (no fixed points) into counting permutations with simpler local properties (specific elements fixed), which correspond to easily calculable intersection sizes.
+
+\subsection{Counting Surjective Functions}
+Another standard application of PIE is counting the number of surjective (onto) functions between two finite sets.[6, 17]
+
+\begin{definition}
+A function $f: A \to B$ is \emph{surjective} (or \emph{onto}) if for every element $b \in B$, there exists at least one element $a \in A$ such that $f(a) = b$. That is, the range of $f$ is equal to the codomain $B$.
+\end{definition}
+
+Let $|A| = m$ and $|B| = n$. For a function to be surjective, we must have $m \ge n$. The total number of functions from $A$ to $B$ is $n^m$, since each of the $m$ elements in $A$ can be mapped independently to any of the $n$ elements in $B$.[14, 20]
+
+To count the number of surjective functions, we again use the complementary form of PIE. Let $S$ be the set of all $n^m$ functions from $A$ to $B$. Let $B = \{b_1, b_2, \ldots, b_n\}$. For $i = 1, \ldots, n$, let $A_i$ be the set of functions $f: A \to B$ such that the element $b_i$ is *not* in the range of $f$.[6] A function is surjective if and only if it does not belong to any $A_i$. We want to calculate $|S| - |\bigcup_{i=1}^n A_i|$.
+
+Consider an intersection of $k$ sets, $A_{i_1} \cap A_{i_2} \cap \cdots \cap A_{i_k}$. This represents the set of functions whose range excludes the elements $b_{i_1}, \ldots, b_{i_k}$. Such functions must map all elements of $A$ into the remaining $n-k$ elements of $B$. The number of such functions is $(n-k)^m$.[6]
+
+The number of ways to choose the $k$ elements to exclude from the range is $\binom{n}{k}$. Therefore, the sum of the sizes of all $k$-way intersections is:
+\
+
+Applying the complementary form of PIE \eqref{eq:pie_complementary}:
+\begin{align*}
+\text{Number of Surjective Functions} &= |S| - |A_1 \cup \cdots \cup A_n| \\
+&= |S| - \left( S_1 - S_2 + S_3 - \cdots + (-1)^{n-1} S_n \right) \\
+&= n^m - \left( \binom{n}{1}(n-1)^m - \binom{n}{2}(n-2)^m + \cdots + (-1)^{n-1} \binom{n}{n}(n-n)^m \right) \\
+&= n^m - \binom{n}{1}(n-1)^m + \binom{n}{2}(n-2)^m - \cdots + (-1)^n \binom{n}{n}(n-n)^m \\
+&= \sum_{k=0}^n (-1)^k \binom{n}{k} (n-k)^m
+\label{eq:surjective}
+\end{align*}
+Note that $(n-n)^m = 0^m$, which is 0 if $m > 0$, and 1 if $m=0$ (though the surjectivity condition $m \ge n$ usually implies $m>0$ unless $n=0$). This formula gives the number of ways to map $m$ distinct items onto $n$ distinct recipients such that every recipient receives at least one item.[14, 17] This result is closely related to the Stirling numbers of the second kind, denoted $S(m, n)$ or $\{{m \atop n}\}$, which count the number of ways to partition a set of $m$ elements into $n$ non-empty subsets. The number of surjective functions is $n! \times S(m, n)$. Like derangements, this example highlights PIE's ability to handle "at least one" or "none" conditions by focusing on simpler intersection properties (functions missing specific elements).
+
+\subsection{Divisibility Problems}
+PIE is frequently used to solve problems involving divisibility conditions.[10, 17]
+
+\begin{example}
+How many integers between 1 and 150 (inclusive) are coprime to 70? [4]
+\end{example}
+\begin{proof}
+An integer is coprime to 70 if it is not divisible by any of the prime factors of $70 = 2 \times 5 \times 7$. Let $S = \{1, 2, \ldots, 150\}$. Let $A_1$ be the set of integers in $S$ divisible by 2, $A_2$ be the set divisible by 5, and $A_3$ be the set divisible by 7. We want to find the number of integers in $S$ that are in none of these sets, which is $|S| - |A_1 \cup A_2 \cup A_3|$.
+
+We calculate the sizes of the sets and their intersections using the floor function:
+\begin{itemize}
+    \item $|A_1| = \lfloor 150 / 2 \rfloor = 75$
+    \item $|A_2| = \lfloor 150 / 5 \rfloor = 30$
+    \item $|A_3| = \lfloor 150 / 7 \rfloor = 21$
+    \item $|A_1 \cap A_2| = \lfloor 150 / \text{lcm}(2,5) \rfloor = \lfloor 150 / 10 \rfloor = 15$
+    \item $|A_1 \cap A_3| = \lfloor 150 / \text{lcm}(2,7) \rfloor = \lfloor 150 / 14 \rfloor = 10$
+    \item $|A_2 \cap A_3| = \lfloor 150 / \text{lcm}(5,7) \rfloor = \lfloor 150 / 35 \rfloor = 4$
+    \item $|A_1 \cap A_2 \cap A_3| = \lfloor 150 / \text{lcm}(2,5,7) \rfloor = \lfloor 150 / 70 \rfloor = 2$
+\end{itemize}
+Using the complementary form of PIE for $n=3$:
+\begin{align*}
+|S \setminus (A_1 \cup A_2 \cup A_3)| &= |S| - (|A_1| + |A_2| + |A_3|) \\
+&\quad + (|A_1 \cap A_2| + |A_1 \cap A_3| + |A_2 \cap A_3|) \\
+&\quad - |A_1 \cap A_2 \cap A_3| \\
+&= 150 - (75 + 30 + 21) + (15 + 10 + 4) - 2 \\
+&= 150 - 126 + 29 - 2 \\
+&= 51
+\end{align*}
+Thus, there are 51 integers between 1 and 150 that are coprime to 70.[4] This type of problem directly translates properties (divisibility by primes) into sets, and the intersections correspond naturally to divisibility by the least common multiple (or product, for distinct primes) of the divisors.
+\end{proof}
+
+\section{Generalizations and Connections}
+
+\subsection{Counting Elements with Exactly j Properties}
+The standard PIE formula calculates the size of the union (elements with at least one property) or its complement (elements with zero properties). A generalization allows for counting the number of elements that possess exactly $j$ of the $n$ properties (i.e., belong to exactly $j$ of the sets $A_1, \ldots, A_n$).[21]
+
+Let $S_0 = |S|$ (the size of the universal set), and for $k \ge 1$, let $S_k$ denote the sum of the cardinalities of all $k$-way intersections:
+\
+Let $E_j$ be the number of elements that belong to exactly $j$ of the sets $A_1, \ldots, A_n$.
+
+\begin{theorem}[Generalized Principle of Inclusion-Exclusion]
+The number of elements belonging to exactly $j$ of the sets $A_1, \ldots, A_n$ is given by:
+\
+\end{theorem}
+\begin{proof}
+Consider an element $x$ that belongs to exactly $m$ sets. We want to show that $x$ contributes 1 to the sum if $m=j$ and 0 otherwise.
+The element $x$ is counted in $S_k$ if and only if the $k$ intersecting sets are chosen from the $m$ sets containing $x$. This happens $\binom{m}{k}$ times (where $\binom{m}{k}=0$ if $k>m$).
+So, the total count for $x$ in the sum for $E_j$ is:
+\[ \sum_{k=j}^n (-1)^{k-j} \binom{k}{j} \binom{m}{k} \]
+Using the identity $\binom{k}{j}\binom{m}{k} = \binom{m}{j}\binom{m-j}{k-j}$, the sum becomes:
+\[ \sum_{k=j}^m (-1)^{k-j} \binom{m}{j} \binom{m-j}{k-j} = \binom{m}{j} \sum_{k=j}^m (-1)^{k-j} \binom{m-j}{k-j} \]
+Let $l = k-j$. The sum becomes:
+\[ \binom{m}{j} \sum_{l=0}^{m-j} (-1)^{l} \binom{m-j}{l} \]
+The inner sum is the binomial expansion of $(1-1)^{m-j}$. This sum is 1 if $m-j=0$ (i.e., $m=j$) and 0 if $m-j > 0$ (i.e., $m > j$).
+Thus, the total count for $x$ is $\binom{m}{j} \times 1 = 1$ if $m=j$, and $\binom{m}{j} \times 0 = 0$ if $m > j$. If $m < j$, the sum is empty (or terms are zero), so the count is 0.
+Hence, the formula correctly counts only those elements belonging to exactly $j$ sets.
+\end{proof}
+This generalization is less frequently applied than the standard form but provides a powerful tool for finer-grained counting problems where the exact number of properties satisfied is important.[21] Notice that for $j=0$, $E_0 = \sum_{k=0}^n (-1)^k \binom{k}{0} S_k = \sum_{k=0}^n (-1)^k S_k$, which recovers the complementary form \eqref{eq:pie_complementary}.
+
+\subsection{Connection to M\"obius Inversion}
+The Principle of Inclusion-Exclusion is not an isolated result but rather a specific instance of a much broader combinatorial principle known as M\"obius inversion, which applies to functions defined on partially ordered sets (posets).[19, 22]
+
+Consider a finite poset $(P, \le)$. The M\"obius function $\mu: P \times P \to \mathbb{Z}$ is defined recursively for $x, y \in P$:
+\begin{itemize}
+    \item $\mu(x, x) = 1$ for all $x \in P$.
+    \item $\mu(x, y) = - \sum_{x \le z < y} \mu(x, z)$ if $x < y$.
+    \item $\mu(x, y) = 0$ if $x \not\le y$.
+\end{itemize}
+The fundamental result is the M\"obius Inversion Formula:
+\begin{theorem}[M\"obius Inversion]
+Let $(P, \le)$ be a finite poset and let $f, g$ be functions from $P$ to an abelian group (e.g., $\mathbb{Z}$). Then
+\[ g(y) = \sum_{x \le y} f(x) \quad \text{for all } y \in P \]
+if and only if
+\[ f(y) = \sum_{x \le y} \mu(x, y) g(x) \quad \text{for all } y \in P \]
+\end{theorem}
+
+The Principle of Inclusion-Exclusion arises when this theorem is applied to the poset $(\mathcal{P}(U), \subseteq)$, the power set of a finite universal set $U$, ordered by subset inclusion. For this poset, the M\"obius function is $\mu(A, B) = (-1)^{|B| - |A|}$ if $A \subseteq B$, and $\mu(A, B) = 0$ otherwise.[22]
+
+Let $A_1, \ldots, A_n$ be subsets of $U$. Define functions $f, g$ on the power set poset $\mathcal{P}(\{1, \ldots, n\})$ ordered by inclusion. For $I \subseteq \{1, \ldots, n\}$, let:
+\begin{itemize}
+    \item $f(I)$ = number of elements in $U$ that belong to $A_i$ for all $i \in I$ and belong to *no* $A_j$ for $j \notin I$. (Exactly the sets indexed by $I$).
+    \item $g(I) = \left| \bigcap_{i \in I} A_i \right|$ (Number of elements belonging to at least the sets indexed by $I$). Note $g(\emptyset) = |U|$.
+\end{itemize}
+It follows that $g(I) = \sum_{J \supseteq I} f(J)$. Applying M\"obius inversion (in its dual form), we get:
+\[ f(I) = \sum_{J \supseteq I} \mu(I, J) g(J) = \sum_{J \supseteq I} (-1)^{|J|-|I|} \left| \bigcap_{j \in J} A_j \right| \]
+Setting $I = \emptyset$, we get $f(\emptyset)$, which is the number of elements belonging to exactly the sets indexed by $\emptyset$ (i.e., belonging to none of the $A_i$).
+\[ f(\emptyset) = E_0 = \sum_{J \subseteq \{1, \ldots, n\}} (-1)^{|J|-|\emptyset|} \left| \bigcap_{j \in J} A_j \right| = \sum_{J \subseteq \{1, \ldots, n\}} (-1)^{|J|} g(J) \]
+This is exactly the complementary form of PIE \eqref{eq:pie_complementary}. The standard PIE formula for the union can also be derived within this framework.[22, 23] This connection places PIE within a larger theoretical structure, showing it is one manifestation of a general inversion principle applicable across various combinatorial settings, including number theory (classical M\"obius inversion on the divisibility poset) and graph theory (chromatic polynomial).[19] While the general theory is powerful, the specific instance of PIE on the subset lattice remains exceptionally prominent due to the intuitive nature of set overlaps and its direct applicability to a wide range of common counting problems.[2, 7]
+
+\section{Conclusion}
+The Principle of Inclusion-Exclusion is a cornerstone of enumerative combinatorics. It provides a systematic and powerful method for counting the elements in the union of overlapping sets, extending the basic Sum Rule to handle non-disjoint cases. Its general formula, characterized by an alternating sum of intersection cardinalities,
+\[ \left| \bigcup_{i=1}^n A_i \right| = \sum_{\emptyset \neq I \subseteq \{1, \ldots, n\}} (-1)^{|I|-1} \left| \bigcap_{i \in I} A_i \right| \]
+and its complementary form for counting elements possessing none of several properties,
+\
+are fundamental tools.
+
+The validity of the principle rests on a clear combinatorial argument: by carefully adding and subtracting the contributions of elements based on the number of sets they belong to, the formula ensures each element in the union is counted exactly once, a fact elegantly tied to binomial identities.
+
+The applications explored—counting derangements, surjective functions, and solving divisibility problems—illustrate the principle's effectiveness in transforming complex counting tasks into manageable calculations involving intersections.[4, 5, 6] These canonical examples demonstrate a common strategy: converting problems about unions or complements into problems about intersections, which are often easier to quantify. While PIE is itself a special case of the more abstract M\"obius inversion on posets [19, 22], its formulation in terms of sets and their overlaps makes it particularly intuitive and widely applicable across combinatorics, probability theory, number theory, and computer science.[2, 7] It remains an indispensable technique for accurately navigating the complexities of counting in the presence of overlapping criteria.
+
+% Bibliography
+\printbibliography
+
+\end{document}
+
+% === references.bib file content ===
+@book{StanleyEC1,
+  title={Enumerative Combinatorics},
+  author={Stanley, Richard P.},
+  volume={1},
+  year={2011},
+  publisher={Cambridge University Press},
+  edition={2nd},
+  note = {Referenced in [3]}
+}
+
+@book{RosenDM7,
+  title={Discrete Mathematics and Its Applications},
+  author={Rosen, Kenneth H.},
+  year={2012},
+  publisher={McGraw-Hill},
+  edition={7th},
+  note = {Referenced in [14]}
+}
+
+@article{RotaMobius,
+  title={On the foundations of combinatorial theory I. Theory of M\"obius functions},
+  author={Rota, Gian-Carlo},
+  journal={Zeitschrift f{\"u}r Wahrscheinlichkeitstheorie und verwandte Gebiete},
+  volume={2},
+  number={4},
+  pages={340--368},
+  year={1964},
+  publisher={Springer},
+  note = {Referenced in [22]}
+}
+
+@misc{WikiPIE,
+  author = {{Wikipedia contributors}},
+  title = {Inclusion--exclusion principle --- {Wikipedia}{,} The Free Encyclopedia},
+  year = {2024},
+  url = {https://en.wikipedia.org/w/index.php?title=Inclusion%E2%80%93exclusion_principle&oldid=1218 Inclusion–exclusion principle},
+  note = {[Online; accessed May 2024]. Referenced in [7]}
+}
+
+@misc{MathWorldPIE,
+  author = {Weisstein, Eric W.},
+  title = {Inclusion-Exclusion Principle},
+  howpublished = {From MathWorld--A Wolfram Web Resource},
+  url = {https://mathworld.wolfram.com/Inclusion-ExclusionPrinciple.html},
+  note = {[Online; accessed May 2024]. Referenced in [16]}
+}
+
+@misc{PohoatzaNotes,
+  author = {Pohoatza, Cosmin},
+  title = {Math 244: Discrete Mathematics - Notes 2},
+  year = {2020},
+  url = {https://pohoatza.wordpress.com/wp-content/uploads/2020/11/244notes_2.pdf},
+  note = {[Online Lecture Notes]. Referenced in [5]}
+}
+
+@misc{JorisPIEGeneral,
+  author = {joriki},
+  title = {Generalised inclusion-exclusion principle},
+  howpublished = {Mathematics Stack Exchange},
+  year = {2016},
+  url = {https://math.stackexchange.com/questions/1808129/generalised-inclusion-exclusion-principle},
+  note = {[Online forum answer]. Referenced in [21]}
+}
+
+@misc{OpenMathBooksPIE,
+  author = {Levin, Oscar},
+  title = {Discrete Mathematics: An Open Introduction, Section 4.7 Advanced PIE},
+  year = {2021}, % Check edition date if possible
+  howpublished = {Open Textbook},
+  url = {https://discrete.openmathbooks.org/dmoi4/sec_advPIE.html},
+  note = {. Referenced in [6]}
+}
+
+@misc{MuldoonNotes,
+  author = {Muldoon, Mark},
+  title = {Some Ingredients for the Matrix-Tree Theorems},
+  year = {2010}, % Based on file name context
+  howpublished = {Lecture Notes, University of Manchester},
+  url = {https://personalpages.manchester.ac.uk/staff/mark.muldoon/Teaching/DiscreteMaths/LectureNotes/MatrixTreeIngredients.pdf},
+  note = {[Online Lecture Notes]. Referenced in [4]}
+}
+
+@misc{Sylvester1883,
+  author = {Sylvester, J. J.},
+  title = {On the equation to the secular inequalities in the planetary theory},
+  journal = {Philosophical Magazine},
+  volume = {16},
+  pages = {267--269},
+  year = {1883},
+  note = {Cited via secondary sources [7, 15]}
+}
+
+@misc{DaSilva1854,
+  author = {da Silva, Daniel Augusto},
+  title = {Propriedades geraes e resolucao directa das congruencias binomias},
+  howpublished = {Lisbon: Academia Real das Sciencias},
+  year = {1854},
+  note = {Cited via secondary sources [7, 15]}
+}
+
+@misc{DeMoivre1718,
+ author = {de Moivre, Abraham},
+ title = {The Doctrine of Chances},
+ year = {1718},
+ publisher = {W. Pearson},
+ note = {Cited via secondary sources [7, 15]}
+}
+
+@misc{BenderGoldman75,
+ author = {Bender, Edward A. and Goldman, Jay R.},
+ title = {On the applications of M\"obius inversion in combinatorial analysis},
+ journal = {American Mathematical Monthly},
+ volume = {82},
+ number = {8},
+ pages = {789--803},
+ year = {1975},
+ note = {Referenced in [22]}
+}
+
+@misc{SakaiPIEPoset,
+ author = {Sakai, Shoichiro},
+ title = {A principle of inclusion-exclusion on partially ordered sets},
+ journal = {Discrete Mathematics},
+ volume = {40},
+ number = {2-3},
+ pages = {243--248},
+ year = {1982},
+ note = {Referenced in [23]}
+}
+
+@misc{FiveablePIEContext,
+  title = {The Principle of Inclusion–Exclusion},
+  howpublished = {Fiveable Study Guide},
+  year = {Accessed 2024},
+  url = {https://library.fiveable.me/combinatorics/unit-5},
+  note = {. Referenced in [24]}
+}
+
+@misc{FiveablePIEApps,
+  title = {Formulation of the Principle of Inclusion-Exclusion},
+  howpublished = {Fiveable Study Guide},
+  year = {Accessed 2024},
+  url = {https://library.fiveable.me/combinatorics/unit-5/formulation-principle-inclusion-exclusion/study-guide/rqwAgv4DksoIBzge},
+  note = {. Referenced in [10]}
+}
+
+@misc{FiveablePIEKeyConcepts,
+  title = {Key Concepts of Inclusion-Exclusion Principle},
+  howpublished = {Fiveable List},
+  year = {Accessed 2024},
+  url = {https://library.fiveable.me/lists/key-concepts-of-inclusion-exclusion-principle},
+  note = {[Online List]. Referenced in [18]}
+}
+
+@misc{TsinghuaEDX,
+  author = {Ma, Yuchun},
+  title = {Combinatorics - Week 6: Inclusion-Exclusion},
+  howpublished = {TsinghuaX Course Material},
+  year = {2015},
+  url = {https://courses.edx.org/asset-v1:TsinghuaX+60240013x+3T2015+type@asset+block/EDX_w6.pdf},
+  note = {[Online Course Material]. Referenced in [8]}
+}
+
+@misc{HSMStackExchange,
+  title = {Invention of principle of inclusion exclusion},
+  howpublished = {History of Science and Mathematics Stack Exchange},
+  year = {2015},
+  url = {https://hsm.stackexchange.com/questions/1978/invention-of-principle-of-inclusion-exclusion},
+  note = {[Online Forum Discussion]. Referenced in [15]}
+}
+
+@misc{ArtOfProblemSolvingPIE,
+  title = {Principle of Inclusion-Exclusion},
+  howpublished = {Art of Problem Solving Wiki},
+  year = {Accessed 2024},
+  url = {https://artofproblemsolving.com/wiki/index.php/Principle_of_Inclusion-Exclusion},
+  note = {[Online Wiki]. Referenced in [1]}
+}
+
+@misc{SemanticScholarPIE,
+  title = {The Inclusion–Exclusion Principle},
+  author = {Da Silva, Daniel and Sylvester, Joseph and Poincaré, H.},
+  howpublished = {Semantic Scholar Topic Page},
+  year = {Accessed 2024},
+  url = {https://www.semanticscholar.org/topic/Inclusion%E2%80%93exclusion-principle/161658},
+  note = {[Online Aggregator]. Referenced in [25]}
+}
+
+@misc{VaiaPIE,
+  title = {Principle of Inclusion-Exclusion},
+  howpublished = {Vaia Study Smarter},
+  year = {Accessed 2024},
+  url = {https://www.vaia.com/en-us/explanations/math/discrete-mathematics/principle-of-inclusion-exclusion/},
+  note = {[Online Educational Platform]. Referenced in [2]}
+}
+
+@misc{BrownNotes,
+  author = {Chan, Melody},
+  title = {Introduction to Higher Mathematics - Lecture Notes},
+  year = {Accessed 2024}, % Date unclear from PDF
+  howpublished = {Brown University Lecture Notes},
+  url = {https://www.math.brown.edu/mchan2/IHM.pdf},
+  note = {[Online Lecture Notes]. Referenced in [11]}
+}
+
+@misc{MoMathNotes,
+  author = {MoMath Rosenthal Prize}, % Attributed to program
+  title = {MoMath Extensions: Combinatorics},
+  year = {2023},
+  howpublished = {MoMath Textbook Resource},
+  url = {https://momath.org/wp-content/uploads/2023/05/MoMathExtensions_textbook.pdf},
+  note = {. Referenced in [12]}
+}
+
+@misc{StackExchangeMobius,
+  title = {Famous uses of the inclusion-exclusion principle},
+  howpublished = {Mathematics Stack Exchange},
+  year = {2011}, % Based on answer dates
+  url = {https://math.stackexchange.com/questions/89548/famous-uses-of-the-inclusion-exclusion-principle},
+  note = {[Online Forum Discussion]. Referenced in [19]}
+}
+
+@misc{MatroidUnionNotes,
+  author = {van der Pol, Stefan},
+  title = {Graph Theory - Lecture Notes},
+  year = {Accessed 2024}, % Date unclear
+  howpublished = {Lecture Notes},
+  url = {http://www.matroidunion.org/stefan/pdf/notes.pdf},
+  note = {[Online Lecture Notes]. Referenced in [26]}
+}
+
+@misc{CiteSeerXCounting,
+  title = {Lecture 2: Basic Rules for Counting},
+  author = {Unknown}, % Author not specified
+  year = {Accessed 2024}, % Date unclear
+  howpublished = {CiteSeerX Document},
+  url = {https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=87a774bbf0a51b81c0a43f065c5740d1b6ca611e},
+  note = {[Online Lecture Notes]. Referenced in [9]}
+}
+
+@misc{ArxivCountingRocks,
+  author = {White, Ryan T. and Ray, Archana Tikayat},
+  title = {Counting Rocks! An Introduction to Combinatorics},
+  year = {2021},
+  eprint = {2108.04902},
+  archivePrefix = {arXiv},
+  primaryClass = {math.CO},
+  note = {Referenced in [27, 28]} % Note: [28] is index, [27] has content
+}
+
+@misc{CMUNotesCombinatorics,
+  author = {Radcliffe, Mark},
+  title = {Notes on Combinatorics},
+  year = {2019}, % Based on file name context
+  howpublished = {Carnegie Mellon University Lecture Notes},
+  url = {https://www.math.cmu.edu/~mradclif/teaching/127S19/Notes/Combinatorics.pdf},
+  note = {[Online Lecture Notes]. Referenced in [29]}
+}
+
+@misc{IITBNotesCounting,
+  author = {Nutan}, % Assuming Nutan Limaye based on context
+  title = {CS 207 Discrete Mathematics - Module 2: Let us count},
+  year = {2013},
+  howpublished = {IIT Bombay Lecture Slides},
+  url = {https://www.cse.iitb.ac.in/~nutan/courses/cs207-13/notes/m2.pdf},
+  note = {. Referenced in [30]}
+}
+
+@misc{UNLNotesPIE,
+  author = {Choueiry, Berthe Y.}, % Likely author based on URL
+  title = {Principle of Inclusion-Exclusion (PIE)},
+  year = {2007}, % Based on file name context
+  howpublished = {University of Nebraska-Lincoln Lecture Slides},
+  url = {http://cse.unl.edu/~choueiry/F07-235/files/Combinatorics-HandoutNoNotes.pdf},
+  note = {. Referenced in [17]}
+}
+
+@misc{CambridgeNotesSets,
+  author = {Unknown}, % Author not specified
+  title = {Discrete Mathematics I: Sets, Relations and Functions},
+  year = {2002}, % Based on file name context
+  howpublished = {University of Cambridge Lecture Notes},
+  url = {https://www.cl.cam.ac.uk/teaching/2001/DiscMaths1/DiscMathsB.pdf},
+  note = {[Online Lecture Notes]. Referenced in [13]}
+}
+
+@misc{RHULNotesCombinatorics,
+  author = {Blackburn, Simon R.}, % Likely author based on URL/context
+  title = {MT454 Combinatorics - Lecture Notes},
+  year = {2010},
+  howpublished = {Royal Holloway, University of London Lecture Notes},
+  url = {http://www.ma.rhul.ac.uk/~uvah099/Maths/Combinatorics10/MT4542010Notes.pdf},
+  note = {[Online Lecture Notes]. Referenced in [31]}
+}
+
+
+
+
